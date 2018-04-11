@@ -1,0 +1,28 @@
+{
+  "name": "talktomary",
+  "productName": "Talk To Mary",
+  "description": "A digital Virgin",
+  "version": "1.0.0",
+  "main": "main.js",
+  "license": "GPL V3",
+  "author": "Kamel Makhloufi",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder",
+    "clean": "rm -rf ./dist",
+    "package": "electron-packager ./ --platform=darwin --arch=x64 --out=out --icon=build/icon.icns --overwrite"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ESAAAlab/TalkToMary"
+  },
+  "devDependencies": {
+    "electron-builder": "^20.8.1",
+    "electron-packager": "^7.3.0",
+    "electron-prebuilt": "^1.2.7",
+    "electron-reload": "^1.2.2"
+  },
+  "dependencies": {
+    "auto-launch": "^5.0.5"
+  }
+}

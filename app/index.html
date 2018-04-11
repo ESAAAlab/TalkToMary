@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>Talk To Mary</title>
+    <link rel="stylesheet" href="./vendor/css/bulma.css" media="screen" charset="utf-8">
+    <link rel="stylesheet" href="./assets/styles.css" media="screen" charset="utf-8">
+  </head>
+  <body>
+    <div class="container">
+      <section class="section">
+          <div class="container is-flex is-horizontal-center">
+            <figure class="image is-128x128">
+              <img src="./assets/logo.png">
+            </figure>
+          </div>
+      </section>
+    </div>
+    <div class="container">
+      <section id="question-section" class="section">
+        <form id="search-form" class="field has-addons">
+          <div class="control is-expanded">
+            <input id="search-question" class="input is-small is-dark" type="text" placeholder="Ask your question">
+          </div>
+          <div class="control">
+            <button id="search-button" class="button is-small is-dark">
+              <i class="fas fa-search"></i>
+            </button>
+          </div>
+        </form>
+      </section>
+      <section id="progress-section" class="section section-is-hidden is-overlay">
+        <progress id="progress-bar" class="progress is-small" value="15" max="100">15%</progress>
+      </section>
+      <section id="answer-section" class="section section-is-hidden is-overlay">
+        <p id="answer-text">
+          This is my anwser.
+        </p>
+        <br/>
+        <div class="control is-expanded">
+          <button id="new-question" class="button is-outlined is-small is-fullwidth is-dark">Ask another question</button>
+        </div>
+      </section>
+      <section id="dummy-section">
+
+      </section>
+    </div>
+
+    <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+
+    <script type="text/javascript" src="./vendor/scripts/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="./vendor/scripts/fontawesome-all.js"></script>
+    <script type="text/javascript" src="./vendor/scripts/compromise.min.js"></script>
+    <script type="text/javascript" src="./index.js"></script>
+
+    <script>if (window.module) module = window.module;</script>
+
+  </body>
+</html>

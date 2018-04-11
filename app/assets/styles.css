@@ -1,0 +1,33 @@
+/* Variables */
+:root {
+  --background-color: #f5f5f4;
+  --text-color: #333;
+  --window-border-radius: 6px;
+}
+
+html {
+  overflow:hidden;
+}
+
+.header-arrow {
+  position: absolute;
+  left: 50%;
+  margin-bottom: 10px;
+  margin-left: -5px;
+  height: 10px;
+  width: 10px;
+  transform: rotate(45deg);
+  background-color: #e8e6e8;
+}
+
+.section {
+  padding: 1rem 1.5rem !important;
+}
+
+.is-horizontal-center {
+  justify-content: center;
+}
+
+.section-is-hidden {
+  display: none;
+}
