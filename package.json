@@ -4,7 +4,7 @@
   "description": "A digital Virgin",
   "version": "1.0.0",
   "main": "main.js",
-  "license": "GPL V3",
+  "license": "GPL-3.0",
   "author": "Kamel Makhloufi",
   "scripts": {
     "start": "electron .",
