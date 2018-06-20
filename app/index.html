@@ -8,43 +8,42 @@
     <link rel="stylesheet" href="./assets/styles.css" media="screen" charset="utf-8">
   </head>
   <body>
-    <div class="container">
-      <section class="section">
-          <div class="container is-flex is-horizontal-center">
-            <figure class="image is-128x128">
-              <img src="./assets/logo.png">
-            </figure>
-          </div>
-      </section>
-    </div>
-    <div class="container">
-      <section id="question-section" class="section">
-        <form id="search-form" class="field has-addons">
-          <div class="control is-expanded">
-            <input id="search-question" class="input is-small is-dark" type="text" placeholder="Ask your question">
-          </div>
-          <div class="control">
-            <button id="search-button" class="button is-small is-dark">
-              <i class="fas fa-search"></i>
-            </button>
-          </div>
-        </form>
-      </section>
-      <section id="progress-section" class="section section-is-hidden is-overlay">
-        <progress id="progress-bar" class="progress is-small" value="15" max="100">15%</progress>
-      </section>
-      <section id="answer-section" class="section section-is-hidden is-overlay">
-        <p id="answer-text">
-          This is my anwser.
-        </p>
-        <br/>
-        <div class="control is-expanded">
-          <button id="new-question" class="button is-outlined is-small is-fullwidth is-dark">Ask another question</button>
+    <div id="main-content" class="columns is-mobile main-content">
+      <div class="column
+                  is-10-mobile is-offset-1-mobile 
+                  is-three-fifths-tablet is-offset-one-fifth-tablet 
+                  is-half-desktop is-offset-one-quarter-desktop">
+        <div class="is-flex is-horizontal-center">
+          <figure class="image is-logo-mary">
+            <img src="./assets/logo.png">
+          </figure>
         </div>
-      </section>
-      <section id="dummy-section">
-
-      </section>
+        <div id="question-section" class="is-overlay">
+          <form id="search-form" class="field has-addons">
+            <div class="control is-expanded">
+              <input id="search-question" class="input is-dark" type="text" placeholder="Ask your question">
+            </div>
+            <div class="control">
+              <button id="search-button" class="button is-dark">
+                <i class="fas fa-search"></i>
+              </button>
+            </div>
+          </form>
+        </div>
+        <div id="progress-section" class="is-overlay is-div-hidden">
+          <progress id="progress-bar" class="progress is-small" value="15" max="100">15%</progress>
+        </div>
+        <div id="answer-section" class="is-overlay is-div-hidden">
+          <p id="answer-text">
+            This is my anwser.
+          </p>
+          <br/>
+          <div class="control is-expanded">
+            <button id="new-question" class="button is-outlined is-small is-fullwidth is-dark">Ask another question</button>
+          </div>
+        </div>
+        <div id="dummy-section"></div>
+      </div>
     </div>
 
     <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>

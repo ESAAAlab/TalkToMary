@@ -1,22 +1,126 @@
-const {ipcRenderer, shell} = require('electron')
-var isElectronApp = window.process.type == "renderer" ? true : false;
-// var isElectronApp = false;
+var ipcRenderer = null;
+var shell = null;
+var remote = null;
+var drag = null;
+var droppable = null;
+var addon = null;
+
+var AppType = {
+  TRAY: "tray",
+  KIOSK: "kiosk",
+  WEB: "web"
+}
+
+var EnvType = {
+  PROD: "prod",
+  DEBUG: "debug"
+}
+
+var AppEnv = {};
 
 var answers = [];
 var nlp;
-var minDuration = 1;
-var maxDuration = 2;
+var minDuration = 10;
+var maxDuration = 30;
+
+
+function handleDragDrop() {
+  var holder = document.getElementById('main-content');
+
+  holder.ondragover = () => {
+    return false;
+  };
+
+  holder.ondragleave = () => {
+    return false;
+  };
+
+  holder.ondragend = () => {
+    return false;
+  };
+
+  holder.ondrop = (ev) => {
+    ev.preventDefault();
+
+
+    if (ev.dataTransfer.items) {
+      // Use DataTransferItemList interface to access the file(s)
+      for (var i = 0; i < ev.dataTransfer.items.length; i++) {
+        // If dropped items aren't files, reject them
+        if (ev.dataTransfer.items[i].kind === 'file') {
+          var file = ev.dataTransfer.items[i].getAsFile();
+          if (file.name === "config.json") {
+            console.log('loading new config file');
+            var reader = new FileReader();
+            reader.onloadend = function (e) {
+              var result = JSON.parse(this.result);
+              parseJSON(result);
+            };
+            reader.readAsText(file);
+          }
+        }
+      }
+    } else {
+      // Use DataTransfer interface to access the file(s)
+      for (var i = 0; i < ev.dataTransfer.files.length; i++) {
+        if (ev.dataTransfer.files[i].name === "config.json") {
+          console.log('loading new config file');
+        }
+      }
+    }
+
+    // for (let f of e.dataTransfer.files) {
+    //   if (f.path.endsWith("config.json")) {
+    //     console.log('loading new config file');
+    //     console.log(f.getData("text/plain"));
+    //   }
+    // }
+
+    return false;
+  };
+}
 
 $(document).ready(function() {
   nlp = window.nlp;
-  $.getJSON("./config.json")
-  .done(function(data){
+
+  $.getJSON("./assets/env.json")
+  .done(function (data) {
+    AppEnv = data;
+    
+    minDuration = AppEnv.minDuration,
+    maxDuration = AppEnv.maxDuration;
+
+    if (AppEnv.env === EnvType.DEBUG) {
+      minDuration = 1;
+      maxDuration = 3;
+      handleDragDrop();
+    }
+
+    if (AppEnv.type !== AppType.WEB) {
+      ipcRenderer = require('electron').ipcRenderer;
+      shell = require('electron').shell;
+      remote = require('electron').remote;
+      parseJSON(remote.getGlobal('configJSON'));
+    } else {      
+      $.getJSON("./assets/config.json")
+      .done(function (data) {
+        parseJSON(data);
+      });
+    }
+  });
+});
+
+function parseJSON(data) {
+  if (data === undefined) {
+    console.log("error no data");
+  } else {
+    console.log("config.json version "+data.version);
     for (var i = 0; i < data.themes.length; i++) {
       var theme = data.themes[i];
       for (var j = 0; j < theme.answers.length; j++) {
         var answer = theme.answers[j];
         var newAnswer = {};
-        newAnswer.id = i+j;
+        newAnswer.id = i + j;
         newAnswer.theme = theme.name;
         newAnswer.answer = answer.answer;
         newAnswer.keywords = [answer.keyword].concat(answer.synonyms);
@@ -26,16 +130,16 @@ $(document).ready(function() {
 
     $("#search-question").focus();
 
-    $("#search-form").submit(function() {
+    $("#search-form").submit(function () {
       event.preventDefault();
       searchAnswer();
     });
 
-    $("#new-question").click(function() {
+    $("#new-question").click(function () {
       resetForm();
     });
-  });
-});
+  }  
+}
 
 function searchAnswer() {
   var question = $("#search-question").val();
@@ -45,7 +149,18 @@ function searchAnswer() {
   if (isQuestion.length > 0) {
     var nouns = nlp(question).nouns().out('array');
     var adjectives = nlp(question).adjectives().out('array');
+
+    var tags = nlp(question).out('tags');
+    var prepositions = [];
+    for (var i = 0; i<tags.length; i++) {
+      var t = tags[i];
+      if (t.tags.includes("Preposition")) {
+        prepositions.push(t.normal);
+      };
+    }
+
     var keywords = nouns.concat(adjectives);
+    keywords = keywords.concat(prepositions);
     var possibleAnswers = [];
     for (var i = 0; i < answers.length; i++) {
       var a = answers[i];
@@ -61,10 +176,10 @@ function searchAnswer() {
 
 function resetForm() {
   $("#answer-section").fadeOut(200);
-  $("#question-section").delay(100).fadeIn(200, function() {
+  $("#question-section").delay(250).fadeIn(200, function() {
     $("#search-question").focus();
   });
-  if (isElectronApp) {
+  if (AppEnv.type === AppType.TRAY) {
     setTimeout(function() {
       ipcRenderer.send('reset-window')
     }, 100);
@@ -76,30 +191,31 @@ function showNotification(answer) {
   var windowHeight = $("#new-question").offset().top + $("#new-question").outerHeight()+24;
   ipcRenderer.send('answer-received', answer)
   ipcRenderer.send('resize-window', windowHeight)
-  let notification = new Notification('Mary answered your question', {
+  /*let notification = new Notification('Mary answered your question', {
     body: answer.answer
   });
 
   notification.onclick = () => {
     ipcRenderer.send('show-window')
-  }
+  }*/
 }
 
 function showAnswer(answers) {
-  console.log(answers);
   var answer = answers[Math.floor(Math.random() * answers.length)];
   $("#answer-text").html(answer.answer);
   $("#progress-bar").attr('value', 0);
   var duration = getRandomDuration(minDuration, maxDuration);
 
   $("#question-section").fadeOut(200);
-  $("#progress-section").delay(100).fadeIn(200);
+  $("#progress-section").delay(250).fadeIn(200);
 
-  if (isElectronApp) {
+  if (AppEnv.type !== AppType.WEB) {
     setTimeout(function() {
       showNotification(answer);
     }, duration+250);
-    ipcRenderer.send('resize-window', 215)
+    if (AppEnv.type === AppType.TRAY) {
+      ipcRenderer.send('resize-window', 215)
+    }    
   }
 
   $({ n: 0 }).animate({ n: 100}, {
@@ -108,7 +224,7 @@ function showAnswer(answers) {
       $("#progress-bar").attr('value', now);
       if (now == 100) {
         $("#progress-section").delay(100).fadeOut(200);
-        $("#answer-section").delay(200).fadeIn(200);
+        $("#answer-section").delay(350).fadeIn(200);
       }
     }
   });

@@ -5,29 +5,36 @@
   --window-border-radius: 6px;
 }
 
-html {
-  overflow:hidden;
+body, html {
+  overflow-x: hidden;
 }
 
-.header-arrow {
-  position: absolute;
-  left: 50%;
-  margin-bottom: 10px;
-  margin-left: -5px;
-  height: 10px;
-  width: 10px;
-  transform: rotate(45deg);
-  background-color: #e8e6e8;
+.main-content {
+  padding-top: 1rem !important;
+  margin: 0px !important;
+  padding-bottom: 1rem !important;
 }
 
-.section {
-  padding: 1rem 1.5rem !important;
+@media screen and (min-width: 768px) {
+  .main-content {
+    padding-top: 20vh !important;
+  }
+}
+
+.is-div-hidden {
+ display: none;
 }
 
 .is-horizontal-center {
   justify-content: center;
 }
 
-.section-is-hidden {
-  display: none;
+.is-overlay {
+  position:relative !important;
+  margin-top: 2rem !important;
+}
+
+.image.is-logo-mary {
+  height: 120px;
+  width: 120px;
 }

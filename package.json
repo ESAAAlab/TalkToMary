@@ -7,22 +7,31 @@
   "license": "GPL-3.0",
   "author": "Kamel Makhloufi",
   "scripts": {
-    "start": "electron .",
-    "build": "electron-builder",
+    "start_tray": "cp env/env_tray.json app/assets/env.json && electron .",
+    "start_kiosk": "cp env/env_kiosk.json app/assets/env.json && electron .",
     "clean": "rm -rf ./dist",
-    "package": "electron-packager ./ --platform=darwin --arch=x64 --out=out --icon=build/icon.icns --overwrite"
+    "serve": "cp env/env_web.json app/assets/env.json && http-server ./app/",
+    "package_web": "cp env/env_web.json app/assets/env.json && mkdir -p ./dist/web && cp -r app/* ./dist/web/",
+    "package_tray": "cp env/env_tray.json app/assets/env.json && electron-packager ./ --platform=all --arch=all --out=dist/tray --icon=build/icon.icns --overwrite",
+    "package_kiosk": "cp env/env_kiosk.json app/assets/env.json && electron-packager ./ --platform=all --arch=all --out=dist/kiosk --icon=build/icon.icns --overwrite"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ESAAAlab/TalkToMary"
   },
   "devDependencies": {
+    "electron": "^1.8.4",
     "electron-builder": "^20.8.1",
     "electron-packager": "^7.3.0",
     "electron-prebuilt": "^1.2.7",
     "electron-reload": "^1.2.2"
   },
   "dependencies": {
-    "auto-launch": "^5.0.5"
+    "auto-launch": "^5.0.5",
+    "electron-drag-drop": "^1.1.0",
+    "electron-fetch": "^1.1.0",
+    "electron-json-storage": "^4.1.0",
+    "electron-online": "^1.0.0",
+    "npm": "^6.1.0"
   }
 }

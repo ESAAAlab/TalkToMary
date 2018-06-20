@@ -1,10 +1,27 @@
-const {app, BrowserWindow, ipcMain, Tray} = require('electron')
-const path = require('path')
+const {app, BrowserWindow, ipcMain, Tray} = require('electron');
+const path = require('path');
 var AutoLaunch = require('auto-launch');
-
+const AppEnv = require('./app/assets/env.json');
+const assetsDirectory = path.join(__dirname, 'app/assets');
+const storage = require('electron-json-storage');
+const fetch = require('electron-fetch');
+const ElectronOnline = require('electron-online');
 require('electron-reload')(__dirname);
 
-const assetsDirectory = path.join(__dirname, 'app/assets')
+require('electron-drag-drop');
+
+const connection = new ElectronOnline();
+
+var AppType  = {
+  TRAY: "tray",
+  KIOSK: "kiosk",
+  WEB: "web"
+}
+
+var EnvType = {
+  PROD: "prod",
+  DEBUG: "debug"
+}
 
 let tray = undefined
 let window = undefined
@@ -12,23 +29,76 @@ let window = undefined
 let winWidth = 300;
 let winHeight = 230;
 
-let isKiosk = false;
+global.configJSON = undefined;
 
-// Don't show the app in the doc
-app.dock.hide()
+connection.on('online', () => {
+  fetch(AppEnv.urlJSON)
+    .catch(err => {
+      console.error(err)
+    })
+    .then(res => res.json())
+    .then(json => {
+      storage.set('config', json, function (data, error) {
+        if (error) throw error;
+        configJSON = json;
+        console.log("Config version " + json.version + " saved to storage");
+      })
+    });
+})
+
+connection.on('pending', () => {
+  storage.has('config', function (error, hasKey) {
+    if (error) throw error;
+    if (hasKey) {
+      console.log('There is data stored as `config`');
+      storage.get('config', function (error, data) {
+        if (error) throw error;
+        console.log('Retrieved config version ' + data.version);
+        configJSON = data;
+      })
+    }
+  });
+});
+
+connection.on('offline', () => {
+  storage.has('config', function (error, hasKey) {
+    if (error) throw error;
+    if (hasKey) {
+      console.log('There is data stored as `config`');
+      storage.get('config', function (error, data) {
+        if (error) throw error;
+        console.log('Retrieved config version ' + data.version);
+        configJSON = data;
+      })
+    }
+  });
+});
+
+if (AppEnv.env === EnvType.DEBUG) {
+  storage.clear(function (error) {
+    if (error) throw error;
+  });
+}
 
 app.on('ready', () => {
-  let autoLaunch = new AutoLaunch({
-    name: 'Talk To Mary',
-    path: app.getPath('exe'),
-  });
-  autoLaunch.isEnabled().then((isEnabled) => {
-    if (!isEnabled) autoLaunch.enable();
-  });
-  if (!isKiosk) {
+  if (AppEnv.type === AppType.TRAY) {
+    let autoLaunch = new AutoLaunch({
+      name: 'Talk To Mary',
+      path: app.getPath('exe'),
+    });
+
+    autoLaunch.isEnabled().then((isEnabled) => {
+      if (!isEnabled) autoLaunch.enable();
+    });
+
     createTray()
   }
-  createWindow()
+
+  if (AppEnv.env !== EnvType.DEBUG) {
+    app.dock.hide();
+  }
+
+  createWindow();
 })
 
 // Quit the app when the window is closed
@@ -44,8 +114,10 @@ const createTray = () => {
     toggleWindow()
 
     // Show devtools when command clicked
-    if (event.shiftKey) {
-      window.openDevTools({mode: 'detach'})
+    if (AppEnv.env === EnvType.DEBUG) {
+      if (event.shiftKey) {
+        window.openDevTools({mode: 'detach'})
+      }
     }
   })
 }
@@ -64,8 +136,7 @@ const getWindowPosition = () => {
 }
 
 const createWindow = () => {
-  console.log("creating windows");
-  if (!isKiosk) {
+  if (AppEnv.type === AppType.TRAY) {
     window = new BrowserWindow({
       width: winWidth,
       height: winHeight,
@@ -75,36 +146,37 @@ const createWindow = () => {
       resizable: false,
       transparent: true,
       webPreferences: {
-        // Prevents renderer process code from not running when window is
-        // hidden
         backgroundThrottling: false
       }
     })
   } else {
     window = new BrowserWindow({
-      width: 800,
-      height: 600,
+      width: 1024,
+      height: 768,
       show: true,
       frame: true,
       fullscreenable: true,
-      resizable: false,
+      resizable: true,
       transparent: false,
       webPreferences: {
-        // Prevents renderer process code from not running when window is
-        // hidden
         backgroundThrottling: false
       }
     })
+    window.show();
+    if (AppEnv.env === EnvType.DEBUG) {
+      window.openDevTools({ mode: 'detach' })
+    }
+    // window.setFullScreen(true); 
   }
 
   window.loadURL(`file://${path.join(__dirname, 'app/index.html')}`)
 
   // Hide the window when it loses focus
-  window.on('blur', () => {
-    if (!window.webContents.isDevToolsOpened()) {
-      window.hide()
-    }
-  })
+  // window.on('blur', () => {
+  //   if (!window.webContents.isDevToolsOpened()) {
+  //     window.hide()
+  //   }
+  // })
 }
 
 const toggleWindow = () => {
@@ -123,24 +195,26 @@ const showWindow = () => {
 }
 
 ipcMain.on('show-window', () => {
-  showWindow()
+  if (AppEnv.type === AppType.TRAY) {
+    showWindow()
+  }
 })
 
 ipcMain.on('reset-window', (event) => {
-  if (!isKiosk) {
+  if (AppEnv.type === AppType.TRAY) {
     tray.setTitle('')
     window.setSize(winWidth, winHeight, true);
   }
 })
 
 ipcMain.on('resize-window', (event, height) => {
-  if (!isKiosk) {
+  if (AppEnv.type === AppType.TRAY) {
     window.setSize(winWidth, height, true);
   }
 })
 
 ipcMain.on('answer-received', (event, answer) => {
-  if (!isKiosk) {
+  if (AppEnv.type === AppType.TRAY) {
     tray.setTitle(answer.title)
   }
 

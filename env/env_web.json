@@ -1,0 +1,7 @@
+{
+    "type": "web",
+    "env": "debug",
+    "urlJSON": "http://etudiants.esaaa.fr/mary/assets/config.json",
+    "minDuration": 5,
+    "maxDuration": 15
+}
