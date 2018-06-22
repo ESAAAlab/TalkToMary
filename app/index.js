@@ -22,7 +22,10 @@ var answers = [];
 var nlp;
 var minDuration = 10;
 var maxDuration = 30;
+var videoInterval = 2000;
+var videoIsPlaying = false;
 
+var playerInterval;
 
 function handleDragDrop() {
   var holder = document.getElementById('main-content');
@@ -80,6 +83,23 @@ function handleDragDrop() {
   };
 }
 
+function playVideo() {
+  videoIsPlaying = true;
+  window.clearInterval(playerInterval);
+  var videoPlayer = $("video").get(0);
+  var promise = videoPlayer.play(0);
+  if (promise !== undefined) {
+    promise.catch(error => {
+      // Auto-play was prevented
+      // Show a UI element to let the user manually start playback
+    }).then(() => {
+      videoPlayer.addEventListener('ended', function () {
+        videoIsPlaying = false;
+      });
+    });
+  }  
+}
+
 $(document).ready(function() {
   nlp = window.nlp;
 
@@ -89,12 +109,37 @@ $(document).ready(function() {
     
     minDuration = AppEnv.minDuration,
     maxDuration = AppEnv.maxDuration;
+    videoInterval = AppEnv.interval*1000;
 
     if (AppEnv.env === EnvType.DEBUG) {
       minDuration = 1;
       maxDuration = 3;
+      videoInterval = 10000;
       handleDragDrop();
     }
+
+    if (!isMobile.phone && window.matchMedia("(min-width: 768px)").matches) {
+
+      console.log("we are on desktop, add event listeners");
+
+      playerInterval = window.setInterval(playVideo, videoInterval);
+
+      window.addEventListener("mousemove", function () {
+        window.clearInterval(playerInterval);
+        if (!videoIsPlaying) {
+          playerInterval = window.setInterval(playVideo, videoInterval);
+        }
+      });
+
+      window.addEventListener("keydown", function () {
+        window.clearInterval(playerInterval);
+        if (!videoIsPlaying) {
+          playerInterval = window.setInterval(playVideo, videoInterval);
+        }
+      });
+    };
+
+    resetForm();
 
     if (AppEnv.type !== AppType.WEB) {
       ipcRenderer = require('electron').ipcRenderer;
@@ -175,8 +220,11 @@ function searchAnswer() {
 }
 
 function resetForm() {
-  $("#answer-section").fadeOut(200);
-  $("#question-section").delay(250).fadeIn(200, function() {
+  $("#new-question").get(0).disabled = true;
+  $("#answer-section").fadeTo(200, 0);
+  $("#progress-section").fadeOut(200);
+  $("#video-mobile").delay(100).animate({ paddingTop: '55px' }, 200);
+  $("#question-section").delay(350).fadeIn(200, function() {
     $("#search-question").focus();
   });
   if (AppEnv.type === AppType.TRAY) {
@@ -205,8 +253,8 @@ function showAnswer(answers) {
   $("#answer-text").html(answer.answer);
   $("#progress-bar").attr('value', 0);
   var duration = getRandomDuration(minDuration, maxDuration);
-
   $("#question-section").fadeOut(200);
+
   $("#progress-section").delay(250).fadeIn(200);
 
   if (AppEnv.type !== AppType.WEB) {
@@ -218,13 +266,17 @@ function showAnswer(answers) {
     }    
   }
 
+  var margin = $("#answer-text").outerHeight() + $("#answer-button").outerHeight() + 20;
+
   $({ n: 0 }).animate({ n: 100}, {
     duration: duration,
     step: function(now, fx) {
       $("#progress-bar").attr('value', now);
       if (now == 100) {
+        $("#new-question").get(0).disabled = false;
         $("#progress-section").delay(100).fadeOut(200);
-        $("#answer-section").delay(350).fadeIn(200);
+        $("#answer-section").delay(350).fadeTo(200, 1);
+        $("#video-mobile").animate({ paddingTop: margin + 'px' }, 200);     
       }
     }
   });

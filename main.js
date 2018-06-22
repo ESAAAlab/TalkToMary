@@ -6,9 +6,8 @@ const assetsDirectory = path.join(__dirname, 'app/assets');
 const storage = require('electron-json-storage');
 const fetch = require('electron-fetch');
 const ElectronOnline = require('electron-online');
-require('electron-reload')(__dirname);
-
-require('electron-drag-drop');
+// require('electron-reload')(__dirname);
+// require('electron-drag-drop');
 
 const connection = new ElectronOnline();
 
@@ -95,7 +94,9 @@ app.on('ready', () => {
   }
 
   if (AppEnv.env !== EnvType.DEBUG) {
-    app.dock.hide();
+    if (app.dock !== undefined) {
+      app.dock.hide();
+    }
   }
 
   createWindow();

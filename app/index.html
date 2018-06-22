@@ -6,6 +6,23 @@
     <title>Talk To Mary</title>
     <link rel="stylesheet" href="./vendor/css/bulma.css" media="screen" charset="utf-8">
     <link rel="stylesheet" href="./assets/styles.css" media="screen" charset="utf-8">
+    <link rel="apple-touch-icon" sizes="57x57" href="/icons/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="/icons/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/icons/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/icons/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/icons/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/icons/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/icons/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/icons/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/icons/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/icons/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png">
+    <link rel="manifest" href="/icons/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="/icons/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
   </head>
   <body>
     <div id="main-content" class="columns is-mobile main-content">
@@ -13,44 +30,55 @@
                   is-10-mobile is-offset-1-mobile 
                   is-three-fifths-tablet is-offset-one-fifth-tablet 
                   is-half-desktop is-offset-one-quarter-desktop">
-        <div class="is-flex is-horizontal-center">
-          <figure class="image is-logo-mary">
-            <img src="./assets/logo.png">
-          </figure>
-        </div>
-        <div id="question-section" class="is-overlay">
-          <form id="search-form" class="field has-addons">
-            <div class="control is-expanded">
-              <input id="search-question" class="input is-dark" type="text" placeholder="Ask your question">
+        <div id="header" class="is-horizontal-center">
+          <div id="logo-video">
+            <video class="is-hidden-mobile">
+              <source src="./assets/video_fade_720p.mp4" type="video/mp4">
+            </video>
+            <div id="logo-image" class="is-flex is-hidden-tablet">
+              <figure id="logo-mary" class="image">
+                <img src="./assets/logo.png">
+              </figure>
             </div>
-            <div class="control">
-              <button id="search-button" class="button is-dark">
-                <i class="fas fa-search"></i>
-              </button>
-            </div>
-          </form>
+          </div>         
         </div>
-        <div id="progress-section" class="is-overlay is-div-hidden">
-          <progress id="progress-bar" class="progress is-small" value="15" max="100">15%</progress>
-        </div>
-        <div id="answer-section" class="is-overlay is-div-hidden">
-          <p id="answer-text">
-            This is my anwser.
-          </p>
-          <br/>
-          <div class="control is-expanded">
-            <button id="new-question" class="button is-outlined is-small is-fullwidth is-dark">Ask another question</button>
+        <div id="controls">
+          <div id="question-section" class="is-overlay">
+            <form id="search-form" class="field has-addons">
+              <div class="control is-expanded">
+                <input id="search-question" class="input is-dark" type="text" placeholder="Ask your question">
+              </div>
+              <div class="control">
+                <button id="search-button" class="button is-dark">
+                  <i class="fas fa-search"></i>
+                </button>
+              </div>
+            </form>
           </div>
+          <div id="progress-section" class="is-overlay">
+            <progress id="progress-bar" class="progress is-small" value="15" max="100">15%</progress>
+          </div>
+          <div id="answer-section" class="is-overlay">
+            <p id="answer-text"></p>
+            <div id="answer-button" class="control is-expanded">
+              <button id="new-question" class="button is-outlined is-small is-fullwidth is-dark" disabled>Ask another question</button>
+            </div>
+          </div>          
         </div>
-        <div id="dummy-section"></div>
+        <div id="video-mobile" class="is-hidden-tablet">
+          <video controls poster="./assets/video_480p_poster.jpg">
+            <source src="./assets/video_480p.mp4" type="video/mp4">
+          </video>
+        </div>
       </div>
     </div>
-
+    
     <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
 
     <script type="text/javascript" src="./vendor/scripts/jquery-3.3.1.min.js"></script>
     <script type="text/javascript" src="./vendor/scripts/fontawesome-all.js"></script>
     <script type="text/javascript" src="./vendor/scripts/compromise.min.js"></script>
+    <script type="text/javascript" src="./vendor/scripts/isMobile.min.js"></script>
     <script type="text/javascript" src="./index.js"></script>
 
     <script>if (window.module) module = window.module;</script>

@@ -5,15 +5,48 @@
   "version": "1.0.0",
   "main": "main.js",
   "license": "GPL-3.0",
-  "author": "Kamel Makhloufi",
+  "author": "Léa Nugue",
   "scripts": {
+    "postinstall": "electron-builder install-app-deps",
     "start_tray": "cp env/env_tray.json app/assets/env.json && electron .",
     "start_kiosk": "cp env/env_kiosk.json app/assets/env.json && electron .",
     "clean": "rm -rf ./dist",
     "serve": "cp env/env_web.json app/assets/env.json && http-server ./app/",
     "package_web": "cp env/env_web.json app/assets/env.json && mkdir -p ./dist/web && cp -r app/* ./dist/web/",
-    "package_tray": "cp env/env_tray.json app/assets/env.json && electron-packager ./ --platform=all --arch=all --out=dist/tray --icon=build/icon.icns --overwrite",
-    "package_kiosk": "cp env/env_kiosk.json app/assets/env.json && electron-packager ./ --platform=all --arch=all --out=dist/kiosk --icon=build/icon.icns --overwrite"
+    "package_kiosk": "export APP_TYPE=kiosk && cp env/env_kiosk.json app/assets/env.json && build --win",
+    "package_tray": "export APP_TYPE=tray && cp env/env_tray.json app/assets/env.json && build"
+  },
+  "build": {
+    "appId": "com.esaaa.talktomary",
+    "productName": "Talk To Mary",
+    "directories": {
+      "output": "./dist/${env.APP_TYPE}"
+    },
+    "dmg": {
+      "icon": "build/icon.icns",
+      "contents": [
+        {
+          "x": 110,
+          "y": 150
+        },
+        {
+          "x": 240,
+          "y": 150,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ]
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "build/icon.ico"
+    }
   },
   "repository": {
     "type": "git",
@@ -21,17 +54,18 @@
   },
   "devDependencies": {
     "electron": "^1.8.4",
-    "electron-builder": "^20.8.1",
+    "electron-builder": "^20.15.1",
+    "electron-builder-squirrel-windows": "^20.15.0",
     "electron-packager": "^7.3.0",
     "electron-prebuilt": "^1.2.7",
     "electron-reload": "^1.2.2"
   },
   "dependencies": {
     "auto-launch": "^5.0.5",
+    "debug": "^3.1.0",
     "electron-drag-drop": "^1.1.0",
     "electron-fetch": "^1.1.0",
     "electron-json-storage": "^4.1.0",
-    "electron-online": "^1.0.0",
-    "npm": "^6.1.0"
+    "electron-online": "^1.0.0"
   }
 }

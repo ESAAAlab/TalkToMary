@@ -1,40 +1,81 @@
 /* Variables */
 :root {
-  --background-color: #f5f5f4;
+  --background-color: rgb(253,253,253);
   --text-color: #333;
   --window-border-radius: 6px;
 }
 
 body, html {
+  background-color: rgb(252,253,252) !important;
   overflow-x: hidden;
+  height: 100% !important;
 }
 
-.main-content {
+#main-content {
   padding-top: 1rem !important;
   margin: 0px !important;
   padding-bottom: 1rem !important;
 }
 
-@media screen and (min-width: 768px) {
-  .main-content {
-    padding-top: 20vh !important;
-  }
-}
-
-.is-div-hidden {
- display: none;
-}
-
-.is-horizontal-center {
+#logo-image {
   justify-content: center;
 }
 
-.is-overlay {
-  position:relative !important;
-  margin-top: 2rem !important;
-}
-
-.image.is-logo-mary {
+#logo-mary {
   height: 120px;
   width: 120px;
 }
+
+#controls {
+  position: relative;
+  margin-top: 2rem !important;
+}
+
+#progress-section {
+  top: 0.7rem !important;
+}
+
+#answer-section {
+  top: 0.3rem !important;
+}
+
+#video-mobile {
+  padding-top: 55px;
+}
+
+#new-question:disabled {
+  cursor: default !important; 
+}
+
+@media screen and (min-width: 768px) {
+  #main-content {
+    padding-top: 5px !important;
+    height: 100% !important;
+  }
+
+  #header {
+    padding-top: 2rem !important;
+  }
+
+  .column {
+    padding-top:0px !important;
+  }
+
+  .is-overlay {
+    margin-top: 0px !important;
+  }
+
+  #logo-video {
+    position: relative;
+    width: 100%;
+  }
+
+  #logo-mary {
+    position: absolute;
+    bottom: 5vh;
+  }  
+}
+
+
+
+

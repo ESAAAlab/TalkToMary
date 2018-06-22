@@ -1,7 +1,8 @@
 {
     "type": "web",
-    "env": "debug",
+    "env": "prod",
     "urlJSON": "http://etudiants.esaaa.fr/mary/assets/config.json",
     "minDuration": 5,
-    "maxDuration": 15
+    "maxDuration": 15,
+    "interval": 120
 }
