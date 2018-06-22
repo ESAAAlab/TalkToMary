@@ -13,8 +13,8 @@
     "clean": "rm -rf ./dist",
     "serve": "cp env/env_web.json app/assets/env.json && http-server ./app/",
     "package_web": "cp env/env_web.json app/assets/env.json && mkdir -p ./dist/web && cp -r app/* ./dist/web/",
-    "package_kiosk": "export APP_TYPE=kiosk && cp env/env_kiosk.json app/assets/env.json && build --win",
-    "package_tray": "export APP_TYPE=tray && cp env/env_tray.json app/assets/env.json && build"
+    "package_kiosk": "export APP_TYPE=kiosk && cp env/env_kiosk.json app/assets/env.json && build --win --mac",
+    "package_tray": "export APP_TYPE=tray && cp env/env_tray.json app/assets/env.json && build --win --mac"
   },
   "build": {
     "appId": "com.esaaa.talktomary",

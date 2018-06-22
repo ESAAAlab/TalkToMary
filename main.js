@@ -168,7 +168,8 @@ const createWindow = () => {
     if (AppEnv.env === EnvType.DEBUG) {
       window.openDevTools({ mode: 'detach' })
     } else {
-      windows.setKiosk(true);
+      window.setMenu(null);
+      window.setKiosk(true);
     }
 
     window.show();

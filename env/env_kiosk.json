@@ -1,6 +1,6 @@
 {
     "type" : "kiosk",
-    "env": "debug",
+    "env": "prod",
     "urlJSON": "http://etudiants.esaaa.fr/mary/assets/config.json",
     "minDuration": 10,
     "maxDuration": 30,
