@@ -6,8 +6,6 @@ const assetsDirectory = path.join(__dirname, 'app/assets');
 const storage = require('electron-json-storage');
 const fetch = require('electron-fetch');
 const ElectronOnline = require('electron-online');
-// require('electron-reload')(__dirname);
-// require('electron-drag-drop');
 
 const connection = new ElectronOnline();
 
@@ -21,6 +19,8 @@ var EnvType = {
   PROD: "prod",
   DEBUG: "debug"
 }
+
+var osvar = process.platform;
 
 let tray = undefined
 let window = undefined
@@ -94,7 +94,7 @@ app.on('ready', () => {
   }
 
   if (AppEnv.env !== EnvType.DEBUG) {
-    if (app.dock !== undefined) {
+    if (osvar == 'darwin') {
       app.dock.hide();
     }
   }
@@ -159,15 +159,19 @@ const createWindow = () => {
       fullscreenable: true,
       resizable: true,
       transparent: false,
+      menu: null,
       webPreferences: {
         backgroundThrottling: false
       }
     })
-    window.show();
+    
     if (AppEnv.env === EnvType.DEBUG) {
       window.openDevTools({ mode: 'detach' })
+    } else {
+      windows.setKiosk(true);
     }
-    // window.setFullScreen(true); 
+
+    window.show();
   }
 
   window.loadURL(`file://${path.join(__dirname, 'app/index.html')}`)

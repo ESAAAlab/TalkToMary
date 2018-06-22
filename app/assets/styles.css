@@ -8,6 +8,7 @@
 body, html {
   background-color: rgb(252,253,252) !important;
   overflow-x: hidden;
+  overflow-y: auto;
   height: 100% !important;
 }
 
@@ -41,6 +42,10 @@ body, html {
 
 #video-mobile {
   padding-top: 55px;
+}
+
+#answer-button {
+  padding-top: 1rem;
 }
 
 #new-question:disabled {

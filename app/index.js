@@ -266,7 +266,7 @@ function showAnswer(answers) {
     }    
   }
 
-  var margin = $("#answer-text").outerHeight() + $("#answer-button").outerHeight() + 20;
+  var margin = $("#answer-text").outerHeight() + $("#answer-button").outerHeight() + 30;
 
   $({ n: 0 }).animate({ n: 100}, {
     duration: duration,
